@@ -1,17 +1,35 @@
-#cloud-config
-autoinstall:
-  version: 1
-  storage:
-    layout:
-      name: zfs
-      match:
-        size: largest
-      swap:
-        size: 20G  # Set our desired swap size
-  identity:
-    hostname: ubuntu
-  early-commands:
-    - apt-get install -y zfsutils-linux
-  late-commands:
-    - zpool set cachefile= rpool
-    - cp /etc/zfs/zpool.cache "/target/etc/zfs/"
+version: 1
+identity:
+  realname: ''
+  username: ubuntu
+  hostname: ubuntu
+  # Use your own encrypted password or we can generate one
+  password: '$6$wdAcoXrU039hKYPd$508Qvbe7ObUnxoj15DRCkzC3qO7edjH0VV7BPNRDYK4QR8ofJaEEF2heacn0QgD.f8pO8SNp83XNdWG6tocBM1'
+
+storage:
+  layout:
+    name: zfs
+  config:
+    - type: disk
+      id: disk-0
+      path: /dev/vda
+      ptable: gpt
+      wipe: superblock
+      preserve: false
+    - type: partition
+      id: partition-0
+      device: disk-0
+      size: 1G
+      flag: boot
+      number: 1
+    - type: partition
+      id: partition-1
+      device: disk-0
+      size: 2G
+      number: 2
+    - type: partition
+      id: partition-2
+      device: disk-0
+      size: 20G
+      flag: swap
+      number: 3
